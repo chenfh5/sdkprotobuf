@@ -1,0 +1,143 @@
+syntax = "proto3";
+package pb3;
+
+message AddressBook {
+    repeated Person people = 1;
+}
+
+// default
+// decode: id->1, name->chenfh5, age->18, phones->Vector(PhoneNumber(180,MOBILE), PhoneNumber(181,HOME), PhoneNumber(182,WORK)), email->chenfh5@qq.com,
+message Person {
+    int32 id = 1;
+    string name = 2;
+    int32 age = 3;
+
+    enum PhoneType {
+        MOBILE = 0;
+        HOME = 1;
+        WORK = 2;
+    }
+
+    message PhoneNumber {
+        string number = 1;
+        PhoneType type = 2;
+    }
+
+    repeated PhoneNumber phones = 4;
+    string email = 5;
+}
+
+// change field name, OK
+// decode: idx->1, namex->chenfh5, agex->18, phones->Vector(PhoneNumber(180,MOBILE), PhoneNumber(181,HOME), PhoneNumber(182,WORK)), emailx->chenfh5@qq.com,
+//message Person {
+//    int32 idx = 1;
+//    string namex = 2;
+//    int32 agex = 3;
+//
+//    enum PhoneType {
+//        MOBILE = 0;
+//        HOME = 1;
+//        WORK = 2;
+//    }
+//
+//    message PhoneNumber {
+//        string number = 1;
+//        PhoneType type = 2;
+//    }
+//
+//    repeated PhoneNumber phones = 4;
+//    string emailx = 5;
+//}
+
+// change field number, FAIL
+// decode: id->0, name->, age->0, phones->Vector(), email->,
+//message Person {
+//    int32 id = 11;
+//    string name = 22;
+//    int32 age = 33;
+//
+//    enum PhoneType {
+//        MOBILE = 0;
+//        HOME = 1;
+//        WORK = 2;
+//    }
+//
+//    message PhoneNumber {
+//        string number = 1;
+//        PhoneType type = 2;
+//    }
+//
+//    repeated PhoneNumber phones = 44;
+//    string email = 55;
+//}
+
+// add a field in the middle, FAIL
+// decode: id->1, name->chenfh5, age->18, phones->Vector(PhoneNumber(180,MOBILE), PhoneNumber(181,HOME), PhoneNumber(182,WORK)), emailx->chenfh5@qq.com, email->,
+//message Person {
+//    int32 id = 1;
+//    string name = 2;
+//    int32 age = 3;
+//
+//    enum PhoneType {
+//        MOBILE = 0;
+//        HOME = 1;
+//        WORK = 2;
+//    }
+//
+//    message PhoneNumber {
+//        string number = 1;
+//        PhoneType type = 2;
+//    }
+//
+//    repeated PhoneNumber phones = 4;
+//    string emailx = 5;
+//    string email = 6;
+//}
+
+// append a field in the last, OK
+// decode: id->1, name->chenfh5, age->18, phones->Vector(PhoneNumber(180,MOBILE), PhoneNumber(181,HOME), PhoneNumber(182,WORK)), email->chenfh5@qq.com, emailx->,
+//message Person {
+//    int32 id = 1;
+//    string name = 2;
+//    int32 age = 3;
+//
+//    enum PhoneType {
+//        MOBILE = 0;
+//        HOME = 1;
+//        WORK = 2;
+//    }
+//
+//    message PhoneNumber {
+//        string number = 1;
+//        PhoneType type = 2;
+//    }
+//
+//    repeated PhoneNumber phones = 4;
+//    string email = 5;
+//    string emailx = 6;
+//}
+
+// remove a field and append a new field, OK
+// decode: id->1, name->chenfh5, phones->Vector(PhoneNumber(180,MOBILE), PhoneNumber(181,HOME), PhoneNumber(182,WORK)), email->chenfh5@qq.com, emailx->,
+//message Person {
+//    int32 id = 1;
+//    string name = 2;
+//
+//    enum PhoneType {
+//        MOBILE = 0;
+//        HOME = 1;
+//        WORK = 2;
+//    }
+//
+//    message PhoneNumber {
+//        string number = 1;
+//        PhoneType type = 2;
+//    }
+//
+//    repeated PhoneNumber phones = 4;
+//    string email = 5;
+//    string emailx = 6;
+//}
+
+// SUMMARY
+// number is important, but not field name
